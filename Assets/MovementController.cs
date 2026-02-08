@@ -1,16 +1,20 @@
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 public class MovementController : MonoBehaviour
 {
+    public Transform cameraTransform;
     public float moveSpeed = 6;
     public float rotateSpeed = 18;
     public float friction = .2f;
     public Vector3 startingDirection = Vector3.back;
+    public bool cameraRelative = false;
 
     private Rigidbody rb;
     private Vector3 targetDirection;
     private Vector3 moveDirection;
     private Vector3 currentDirection;
+    private float dirHorizontal, dirVertical;
     private float moveAmount;
     private float moveVelocity;
     private float rotateVelocity;
@@ -38,6 +42,7 @@ public class MovementController : MonoBehaviour
 
         if (moveAmount > 0.1)
         {
+            UpdateTargetDirection();
             float directionDifference = Vector3.SignedAngle(currentDirection, targetDirection, Vector3.up);
             
             // Reset the rotational velocity if we are now turning in a different direction
@@ -102,11 +107,33 @@ public class MovementController : MonoBehaviour
 
     public void SetMovement(Vector2 value)
     {
-        this.targetDirection.x = value.x;
-        this.targetDirection.z = value.y;
-        this.targetDirection.y = 0;
-        this.targetDirection.Normalize();
-
+        dirHorizontal = value.x;
+        dirVertical = value.y;
         moveAmount = value.magnitude;
+    }
+
+    private void UpdateTargetDirection()
+    {
+        if (cameraRelative)
+        {
+            // Get the reference vectors from the camera
+            Vector3 refForward = cameraTransform.forward;
+            Vector3 refRight = cameraTransform.right;
+            refForward.y = 0;
+            refRight.y = 0;
+            refForward.Normalize();
+            refRight.Normalize();
+
+            // Set the direction relative to the camera
+            targetDirection = (refForward * dirVertical) + (refRight * dirHorizontal);
+        }
+        else
+        {
+            targetDirection.x = dirHorizontal;
+            targetDirection.z = dirVertical;
+        }
+
+        targetDirection.y = 0;
+        targetDirection.Normalize();
     }
 }
