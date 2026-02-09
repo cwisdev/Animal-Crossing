@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90e1a3ddfaf1abc468a18f74faa3df32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowPlayer
-  startingState: {fileID: 11400000, guid: 4ae49249a2605b745a2b5cbd79a51335, type: 2}
+  startingState: {fileID: 11400000, guid: d8c3fe27c6a231a4bbb6adc0aa926af1, type: 2}
   player: {fileID: 537690693}
 --- !u!114 &330585549
 MonoBehaviour:
