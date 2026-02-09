@@ -144,9 +144,9 @@
                 },
                 {
                     "name": "Zoom",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "29351499-68dd-4d35-8979-5b227e94a75a",
-                    "expectedControlType": "Analog",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true

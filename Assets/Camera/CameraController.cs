@@ -27,6 +27,7 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
+        state.ImplicitTick(context);
         state.Tick(context);
     }
 
@@ -42,10 +43,5 @@ public class CameraController : MonoBehaviour
     private void OnZoom(InputValue value)
     {
         state.Zoom(context, value.Get<float>());
-        //float zoomAmount = value.Get<float>();
-        //if (zoomAmount > 0)
-        //    state.Zoom(context, zoomAmount);
-        //else if (zoomAmount < 0)
-        //    state.Zoom(context, zoomAmount);
     }
 }

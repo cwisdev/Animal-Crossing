@@ -9,20 +9,18 @@ public class FollowCamState : CameraState
 
     public float maxDistance = 9.5f;
     public float minDistance = 4.5f;
-
-    public float zoomSpeed = .1f;
+    
+    public int numZoomLevels = 5;
 
     Vector3 direction;
 
-    float zoom;
-    float zoomVelocity;
-
     public override void Enter(CameraContext context)
     {
+        Debug.Log("zoom: " + GetZoom());
         if (direction.Equals(Vector3.zero))
             direction = defaultDirection;
-        if (zoom == 0)
-            zoom = defaultZoom;
+        if (GetZoom() == 0)
+            ForceZoom(defaultZoom);
     }
 
     public override void Exit(CameraContext context)
@@ -31,11 +29,6 @@ public class FollowCamState : CameraState
 
     public override void Tick(CameraContext context)
     {
-        if (zoomVelocity != 0)
-        {
-            zoom += zoomVelocity * Time.deltaTime;
-            zoom = Mathf.Clamp(zoom, 0, 1);
-        }
         float height = GetHeight();
         float distance = GetDistance();
         float pitch = GetPitch();
@@ -51,21 +44,26 @@ public class FollowCamState : CameraState
 
     public override void Zoom(CameraContext context, float amount)
     {
-        zoomVelocity = amount * zoomSpeed;
-
+        if (!IsZooming())
+        {
+            float zoomDelta = 1 / (float) numZoomLevels;
+            if (amount < 0)
+                zoomDelta *= -1;
+            IncreaseTargetZoom(zoomDelta);
+        }
     }
 
     private float GetDistance()
     {
-        return (maxDistance - minDistance) * zoom + minDistance;
+        return (maxDistance - minDistance) * GetZoom() + minDistance;
     }
     private float GetPitch()
     {
-        return 4.1667f * Mathf.Pow(zoom, 2) - 9.1667f * zoom;
+        return 4.1667f * Mathf.Pow(GetZoom(), 2) - 9.1667f * GetZoom();
     }
 
     private float GetHeight()
     {
-        return 1.0417f * Mathf.Pow(zoom, 2) + 3.2083f * zoom + 1.75f;
+        return 1.0417f * Mathf.Pow(GetZoom(), 2) + 3.2083f * GetZoom() + 1.75f;
     }
 }

@@ -9,7 +9,7 @@ public class FollowPlayerState : CameraState
     public float height = .65f;
     public float heightOffset = 0;
     public float rotateSpeed = 500;
-    public float zoomSpeed = 5;
+    //public float zoomSpeed = 5;
 
     [NonSerialized]
     float yaw = 0;
