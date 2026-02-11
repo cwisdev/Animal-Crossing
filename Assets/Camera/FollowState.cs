@@ -10,15 +10,17 @@ public class FollowCamState : CameraState
     public float maxDistance = 9.5f;
     public float minDistance = 4.5f;
     
-    public int numZoomLevels = 5;
+    public int numZoomLevels = 3;
 
     Vector3 direction;
 
     public override void Enter(CameraContext context)
     {
-        Debug.Log("zoom: " + GetZoom());
         if (direction.Equals(Vector3.zero))
+        {
+            ForceYaw(0);
             direction = defaultDirection;
+        }
         if (GetZoom() == 0)
             ForceZoom(defaultZoom);
     }
@@ -29,6 +31,8 @@ public class FollowCamState : CameraState
 
     public override void Tick(CameraContext context)
     {
+        direction = Quaternion.Euler(0, GetYaw(), 0) * Vector3.forward;
+
         float height = GetHeight();
         float distance = GetDistance();
         float pitch = GetPitch();
@@ -40,23 +44,34 @@ public class FollowCamState : CameraState
 
     public override void Rotate(CameraContext context, float amount)
     {
+        if (amount != 0)
+            if (!IsRotating())
+            {
+                Debug.Log(amount);
+                if (amount > 0)
+                    IncreaseTargetYaw(90);
+                else if (amount < 0)
+                    IncreaseTargetYaw(-90);
+            }
     }
 
     public override void Zoom(CameraContext context, float amount)
     {
-        if (!IsZooming())
-        {
-            float zoomDelta = 1 / (float) numZoomLevels;
-            if (amount < 0)
-                zoomDelta *= -1;
-            IncreaseTargetZoom(zoomDelta);
-        }
+        if (amount != 0)
+            if (!IsZooming())
+            {
+                float zoomDelta = 1 / (float) numZoomLevels;
+                if (amount < 0)
+                    zoomDelta *= -1;
+                IncreaseTargetZoom(zoomDelta);
+            }
     }
 
     private float GetDistance()
     {
         return (maxDistance - minDistance) * GetZoom() + minDistance;
     }
+
     private float GetPitch()
     {
         return 4.1667f * Mathf.Pow(GetZoom(), 2) - 9.1667f * GetZoom();

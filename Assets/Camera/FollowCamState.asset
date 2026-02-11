@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46686294349631b4e9c79c0ded936640, type: 3}
   m_Name: FollowCamState
   m_EditorClassIdentifier: Assembly-CSharp::FollowCamState
+  ZoomTolerance: 0.001
+  RotateTolerance: 0.1
+  zoomSpeed: 8
+  rotateSpeed: 10
   defaultDirection: {x: 0, y: 0, z: -1}
   defaultZoom: 0.4
   maxDistance: 9.5
   minDistance: 5
-  zoomSpeed: 2
+  numZoomLevels: 2
