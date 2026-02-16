@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Camera/States/Follow")]
@@ -12,13 +13,21 @@ public class FollowCamState : CameraState
     
     public int numZoomLevels = 3;
 
+    // TODO: convert to const
+    public float RotateThreshold = 30;
+
+    [NonSerialized]
     Vector3 direction;
+
+    [NonSerialized]
+    private float prevTargetYaw;
 
     public override void Enter(CameraContext context)
     {
         if (direction.Equals(Vector3.zero))
         {
             ForceYaw(0);
+            prevTargetYaw = 0;
             direction = defaultDirection;
         }
         if (GetZoom() == 0)
@@ -45,26 +54,39 @@ public class FollowCamState : CameraState
     public override void Rotate(CameraContext context, float amount)
     {
         if (amount != 0)
-            if (!IsRotating())
+        {
+            float inbetweenYaw = Mathf.Round(GetYaw() / 90) * 90;
+            float newTargetYaw = 0;
+
+            if (amount > 0)
             {
-                Debug.Log(amount);
-                if (amount > 0)
-                    IncreaseTargetYaw(90);
-                else if (amount < 0)
-                    IncreaseTargetYaw(-90);
+                if (inbetweenYaw > GetTargetYaw())
+                    newTargetYaw = inbetweenYaw;
+                else if (Mathf.Abs(GetTargetYaw() - inbetweenYaw) < RotateThreshold)
+                    newTargetYaw = inbetweenYaw + 90;
             }
+            else
+            {
+                if (inbetweenYaw < GetTargetYaw())
+                    newTargetYaw = inbetweenYaw;
+                else if (Mathf.Abs(inbetweenYaw - GetTargetYaw()) < RotateThreshold)
+                    newTargetYaw = inbetweenYaw - 90;
+            }
+
+            if (newTargetYaw != 0)
+                SetTargetYaw(newTargetYaw);
+        }
     }
 
     public override void Zoom(CameraContext context, float amount)
     {
         if (amount != 0)
-            if (!IsZooming())
-            {
-                float zoomDelta = 1 / (float) numZoomLevels;
-                if (amount < 0)
-                    zoomDelta *= -1;
-                IncreaseTargetZoom(zoomDelta);
-            }
+        {
+            float zoomDelta = 1 / (float) numZoomLevels;
+            if (amount < 0)
+                zoomDelta *= -1;
+            IncreaseTargetZoom(zoomDelta);
+        }
     }
 
     private float GetDistance()
