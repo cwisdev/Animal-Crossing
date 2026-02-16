@@ -22,12 +22,11 @@ public abstract class CameraState : ScriptableObject
     [NonSerialized]
     private float yaw;
 
-
     // Transitions
     [NonSerialized]
-    private float zoomProgress = 0;
+    private float zoomDelta = 0;
     [NonSerialized]
-    private float rotateProgress = 0;
+    private float rotateDelta = 0;
 
     public abstract void Enter(CameraContext context);
     public abstract void Exit(CameraContext context);
@@ -40,22 +39,29 @@ public abstract class CameraState : ScriptableObject
     {
         if (IsZooming())
         {
-            zoomProgress += zoomSpeed * Time.deltaTime;
+            zoomDelta += zoomSpeed * Time.deltaTime;
+            if (zoomDelta > zoomSpeed)
+                zoomDelta = zoomSpeed;
+            zoom = Mathf.Lerp(zoom, targetZoom, zoomDelta);
             if (!IsZooming())
-                zoomProgress = 1;
-            zoom = Mathf.Lerp(zoom, targetZoom, zoomProgress);
+            {
+                zoom = targetZoom;
+                zoomDelta = 0;
+            }
         }
 
         if (IsRotating())
         {
-            rotateProgress += rotateSpeed * Time.deltaTime;
+            rotateDelta += rotateSpeed * Time.deltaTime;
+            if (rotateDelta > rotateSpeed)
+                rotateDelta = rotateSpeed;
+            yaw = Mathf.Lerp(yaw, targetYaw, rotateDelta);
             if (!IsRotating())
             {
-                rotateProgress = 1;
                 targetYaw %= 360;
-                yaw %= 360;
+                yaw = targetYaw;
+                rotateDelta = 0;
             }
-            yaw = Mathf.Lerp(yaw, targetYaw, rotateProgress);
         }
     }
 
@@ -73,7 +79,7 @@ public abstract class CameraState : ScriptableObject
     public void SetTargetZoom(float targetZoom)
     {
         this.targetZoom = Mathf.Clamp(targetZoom, 0, 1);
-        zoomProgress = 0;
+        zoomDelta = 0;
     }
 
     protected float GetTargetZoom()
@@ -100,7 +106,7 @@ public abstract class CameraState : ScriptableObject
     public void SetTargetYaw(float targetYaw)
     {
         this.targetYaw = targetYaw;
-        rotateProgress = 0;
+        rotateDelta = 0;
     }
 
     protected float GetTargetYaw()
@@ -115,11 +121,11 @@ public abstract class CameraState : ScriptableObject
 
     public bool IsZooming()
     {
-        return 1 - zoomProgress > ZoomTolerance;
+        return Mathf.Abs(zoom - targetZoom) > ZoomTolerance;
     }
 
     public bool IsRotating()
     {
-        return 1 - rotateProgress > ZoomTolerance;
+        return Mathf.Abs(yaw - targetYaw) > RotateTolerance;
     }
 }
