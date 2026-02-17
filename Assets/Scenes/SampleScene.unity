@@ -1100,12 +1100,13 @@ MonoBehaviour:
   moon: {fileID: 1128254844}
   twilightColor: {r: 1, g: 0.6470588, b: 0, a: 1}
   dayColour: {r: 1, g: 1, b: 1, a: 1}
+  nightColour: {r: 0, g: 0, b: 1, a: 1}
   dayIntensity: 2
   nightIntensity: 0.5
   latitude: 51.05
   twilightColorBuffer: 2
   twilightIntensityBuffer: 1
-  maxMoonHeight: 190
+  maxMoonHeight: 180
   minMoonHeight: 155
   moonApexYaw: 90
   moonYawRange: 90
