@@ -6,14 +6,17 @@ public class DayNightManager: MonoBehaviour
 {
     public GameObject sun;
     public GameObject moon;
+    
     public Color twilightColor = Color.orange;
     public Color dayColour = Color.white;
     public Color nightColour = Color.blue;
+
     public float dayIntensity = 2;
     public float nightIntensity = .5f;
     public float latitude = 51.05f;
     public float twilightColorBuffer = 2;
     public float twilightIntensityBuffer = 1;
+
     public float maxMoonHeight = 180;
     public float minMoonHeight = 155;
     public float moonApexYaw = 90;
@@ -58,15 +61,16 @@ public class DayNightManager: MonoBehaviour
         // Change the positions and lighting of the sun and moon when the time changes
         if (TimeHasChanged())
         {
-            float dayLength = sunset - sunrise;
-            currTime = currHour + ((float)currMinute / 60);
+            //float dayLength = sunset - sunrise;
+            //currTime = currHour + ((float)currMinute / 60);
 
-            float rotateX = -90;
-            if ((currTime >= sunrise) && (currTime <= sunset))
-                rotateX = ((currTime - sunrise) / dayLength) * 180;
+            //float rotateX = -90;
+            //if ((currTime >= sunrise) && (currTime <= sunset))
+            //    rotateX = ((currTime - sunrise) / dayLength) * 180;
 
-            sun.transform.rotation = Quaternion.Euler(rotateX, 0, 0);
+            //sun.transform.rotation = Quaternion.Euler(rotateX, 0, 0);
 
+            UpdateSunRotation();
             UpdateSunColour();
             UpdateSunIntensity();
             UpdateMoonRotation();
@@ -77,6 +81,29 @@ public class DayNightManager: MonoBehaviour
         lastDay = currDay;
         lastHour = currHour;
         lastMinute = currMinute;
+    }
+
+    // Sets the position of the sun based on time and latitude
+    private void UpdateSunRotation()
+    {
+        float dayLength = sunset - sunrise;
+        float altitude, azimuth;
+
+        currTime = currHour + ((float) currMinute / 60);
+
+        if ((currTime >= sunrise) && (currTime <= sunset))
+        {
+            float dayTime = (currTime - sunrise) / dayLength;
+            float maxAltitude = 90 - Mathf.Abs(latitude);
+            altitude = Mathf.Sin(dayTime * Mathf.PI) * maxAltitude;
+            azimuth = dayTime * 180;
+        } else
+        {
+            azimuth = 0;
+            altitude = 0;
+        }
+
+            sun.transform.rotation = Quaternion.Euler(altitude, azimuth, 0);
     }
 
     // Transition between the daylight hue and the dusk/dawn hue
