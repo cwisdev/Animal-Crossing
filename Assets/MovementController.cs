@@ -10,7 +10,7 @@ public class MovementController : MonoBehaviour
     public Vector3 startingDirection = Vector3.back;
     public bool cameraRelative = false;
 
-    private Rigidbody rb;
+    private CharacterController controller;
     private Vector3 targetDirection;
     private Vector3 moveDirection;
     private Vector3 currentDirection;
@@ -28,15 +28,15 @@ public class MovementController : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        controller = GetComponent<CharacterController>();
 
         // Set the starting direction
         currentDirection = startingDirection;
-        rb.rotation = Quaternion.LookRotation(currentDirection);
+        controller.transform.localRotation = Quaternion.LookRotation(currentDirection);
         transform.rotation = Quaternion.LookRotation(currentDirection);
     }
 
-    void FixedUpdate()
+    void Update()
     {
         float maxMoveVelocity = 0;
 
@@ -102,7 +102,7 @@ public class MovementController : MonoBehaviour
             moveDirection = currentDirection;
 
         // Move in the current direction
-        rb.linearVelocity = moveDirection * moveVelocity * Time.deltaTime * 50;
+        controller.Move(moveDirection * moveVelocity * Time.deltaTime);
     }
 
     public void SetMovement(Vector2 value)
