@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Camera/States/Follow")]
-public class FollowCamState : CameraState
+public class FollowCamState : OldCameraState
 {
     const int ZoomUp = 1;
     const int ZoomMid = 2;

@@ -3,41 +3,51 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
-    public CameraState startingState;
+    public CameraBehaviour defaultBehaviour;
     public GameObject player;
-
-    Transform targetTransform;
-
+    public float transitionSpeed = 1;
+    
     CameraContext context;
+    CameraTransition transition = new CameraTransition();
+    CameraBehaviour behaviour;
     CameraState state;
 
     void Awake()
     {
         context = new CameraContext(transform, player.transform);
-        SetState(startingState);
+        SetBehaviour(defaultBehaviour);
     }
 
-    public void SetState(CameraState newState)
+    public void SetBehaviour(CameraBehaviour newBehaviour)
     {
-        if (state != null)
-            state.Exit(context);
-        state = newState;
-        state.Enter(context);
+        if (behaviour != null)
+            behaviour.Exit();
+        behaviour = newBehaviour;
+        behaviour.Enter();
     }
 
     void LateUpdate()
     {
-        state.ImplicitTick(context);
-        state.Tick(context);
+        state = behaviour.GetCameraState(context);
+
+        if (transition.IsTransitioning())
+            transition.UpdateTransition(transform);
+        else
+        {
+            transform.position = state.position;
+            transform.rotation = state.rotation;
+        }
     }
 
     private void OnRotate(InputValue value)
     {
-        state.Rotate(context, value.Get<float>());
+        if (!transition.IsTransitioning())
+            behaviour.Rotate(value.Get<float>());
     }
 
     private void OnZoom(InputValue value)
     {
-        state.Zoom(context, value.Get<float>());
+        if (!transition.IsTransitioning())
+            behaviour.Zoom(value.Get<float>());
     }
 }

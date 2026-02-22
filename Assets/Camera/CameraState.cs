@@ -1,131 +1,13 @@
-using System;
 using UnityEngine;
 
-public abstract class CameraState : ScriptableObject
+public struct CameraState
 {
-    // TODO: make this constants
-    public float ZoomTolerance = .001f;
-    public float RotateTolerance = 0.1f;
-    
-    public float zoomSpeed;
-    public float rotateSpeed;
+    public Vector3 position;
+    public Quaternion rotation;
 
-    // Target values
-    [NonSerialized]
-    private float targetZoom;
-    [NonSerialized]
-    private float targetYaw;
-
-    // Current values
-    [NonSerialized]
-    private float zoom;
-    [NonSerialized]
-    private float yaw;
-
-    // Transitions
-    [NonSerialized]
-    private float zoomDelta = 0;
-    [NonSerialized]
-    private float rotateDelta = 0;
-
-    public abstract void Enter(CameraContext context);
-    public abstract void Exit(CameraContext context);
-    public abstract void Tick(CameraContext context);
-
-    public abstract void Rotate(CameraContext context, float amount);
-    public abstract void Zoom(CameraContext context, float amount);
-
-    public void ImplicitTick(CameraContext context)
+    public CameraState(Vector3 position, Quaternion rotation)
     {
-        if (IsZooming())
-        {
-            zoomDelta += zoomSpeed * Time.deltaTime;
-            if (zoomDelta > zoomSpeed)
-                zoomDelta = zoomSpeed;
-            zoom = Mathf.Lerp(zoom, targetZoom, zoomDelta);
-            if (!IsZooming())
-            {
-                zoom = targetZoom;
-                zoomDelta = 0;
-            }
-        }
-
-        if (IsRotating())
-        {
-            rotateDelta += rotateSpeed * Time.deltaTime;
-            if (rotateDelta > rotateSpeed)
-                rotateDelta = rotateSpeed;
-            yaw = Mathf.Lerp(yaw, targetYaw, rotateDelta);
-            if (!IsRotating())
-            {
-                targetYaw %= 360;
-                yaw = targetYaw;
-                rotateDelta = 0;
-            }
-        }
-    }
-
-    public float GetZoom()
-    {
-        return zoom;
-    }
-
-    public void ForceZoom(float zoom)
-    {
-        SetTargetZoom(zoom);
-        this.zoom = targetZoom;
-    }
-
-    public void SetTargetZoom(float targetZoom)
-    {
-        this.targetZoom = Mathf.Clamp(targetZoom, 0, 1);
-        zoomDelta = 0;
-    }
-
-    protected float GetTargetZoom()
-    {
-        return targetZoom;
-    }
-
-    public void IncreaseTargetZoom(float amount)
-    {
-        SetTargetZoom(targetZoom + amount);
-    }
-
-    public float GetYaw()
-    {
-        return yaw;
-    }
-
-    public void ForceYaw(float yaw)
-    {
-        SetTargetYaw(yaw);
-        this.yaw = targetYaw;
-    }
-
-    public void SetTargetYaw(float targetYaw)
-    {
-        this.targetYaw = targetYaw;
-        rotateDelta = 0;
-    }
-
-    protected float GetTargetYaw()
-    {
-        return targetYaw;
-    }
-
-    public void IncreaseTargetYaw(float amount)
-    {
-        SetTargetYaw(targetYaw + amount);
-    }
-
-    public bool IsZooming()
-    {
-        return Mathf.Abs(zoom - targetZoom) > ZoomTolerance;
-    }
-
-    public bool IsRotating()
-    {
-        return Mathf.Abs(yaw - targetYaw) > RotateTolerance;
+        this.position = position;
+        this.rotation = rotation;
     }
 }
