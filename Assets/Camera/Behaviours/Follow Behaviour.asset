@@ -12,7 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b7cbc3a4387a5d4582511b9a47a5a7a, type: 3}
   m_Name: Follow Behaviour
   m_EditorClassIdentifier: Assembly-CSharp::FollowBehaviour
-  rotateSpeed: 0
-  distance: 9
-  height: 5
+  distance: 10.13
   defaultYaw: 90
+  rotateThreshold: 30
+  maxRotateDuration: 1
+  minRotateDuration: 0.5
+  maxZoomDuration: 1
+  minZoomDuration: 0.3
+  yaw: 180
+  lastYaw: 156.76353
+  targetYaw: 180
+  rotateTimer: 0
+  rotateDuration: 0
+  zoomLevel: 1
+  height: 5
+  lookHeight: 0
+  lastHeight: 6.579794
+  lastLookHeight: -1.0037128
+  targetHeight: 5
+  targetLookHeight: 0
+  zoomTimer: 0
+  zoomDuration: 0
+  lastZoomDirection: 1
