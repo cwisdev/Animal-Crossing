@@ -14,23 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FollowBehaviour
   distance: 10.13
   defaultYaw: 90
+  rotateAmount: 90
   rotateThreshold: 30
+  zoomThreshold: 0.66
   maxRotateDuration: 1
   minRotateDuration: 0.5
-  maxZoomDuration: 1
-  minZoomDuration: 0.3
-  yaw: 180
-  lastYaw: 156.76353
-  targetYaw: 180
-  rotateTimer: 0
-  rotateDuration: 0
-  zoomLevel: 1
-  height: 5
-  lookHeight: 0
-  lastHeight: 6.579794
-  lastLookHeight: -1.0037128
-  targetHeight: 5
-  targetLookHeight: 0
-  zoomTimer: 0
-  zoomDuration: 0
-  lastZoomDirection: 1
+  maxZoomDuration: 0.8
+  minZoomDuration: 0.5

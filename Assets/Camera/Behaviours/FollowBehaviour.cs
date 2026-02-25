@@ -1,53 +1,64 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
 
 [CreateAssetMenu(menuName = "Camera/Behaviours/Follow Behaviour")]
 public class FollowBehaviour : CameraBehaviour
 {
     public float distance = 9;
     public float defaultYaw = 90;
-    public float rotateThreshold = 30;
+    // How many degrees the yaw increases/decreases by with one increment
+    public float rotateAmount = 90;
+    // Percentage that the current rotation must complete before additional rotations in the same direction can occur
+    public float rotateThreshold = .66f;
+    // Percentage that the current zoom must complete before additional zooming in the same direction can occur
+    public float zoomThreshold = .8f;
 
+    // Maximum rotation transition time in seconds
     public float maxRotateDuration = 1;
+    // Minimum rotation transition time in seconds
     public float minRotateDuration = .5f;
-    public float maxZoomDuration = 1;
+    // Maximum zoom transition time in seconds
+    public float maxZoomDuration = .8f;
+    // Minimum rotation transition time in seconds
     public float minZoomDuration = .5f;
 
-    //[NonSerialized]
-    public float yaw = -1;
-    //[NonSerialized]
-    public float lastYaw;
-    //[NonSerialized]
-    public float targetYaw;
-    //[NonSerialized]
-    public float rotateTimer;
-    //[NonSerialized]
-    public float rotateDuration;
-    //[NonSerialized]
+    [NonSerialized]
+    float yaw = -1;
+    [NonSerialized]
+    float lastYaw;
+    [NonSerialized]
+    float targetYaw;
+    [NonSerialized]
+    float rotateTimer;
+    [NonSerialized]
+    float rotateDuration;
+    [NonSerialized]
     bool rotating;
 
-    //[NonSerialized]
-    public int zoomLevel;
-    //[NonSerialized]
-    public float height = 5;
-    //[NonSerialized]
-    public float lookHeight = 0;
-    //[NonSerialized]
-    public float lastHeight;
-    //[NonSerialized]
-    public float lastLookHeight;
-    //[NonSerialized]
-    public float targetHeight;
-    //[NonSerialized]
-    public float targetLookHeight;
-    //[NonSerialized]
-    public float zoomTimer;
-    //[NonSerialized]
-    public float zoomDuration;
-    //[NonSerialized]
+    [NonSerialized]
+    int zoomLevel;
+    [NonSerialized]
+    float height = 5;
+    [NonSerialized]
+    float lookHeight = 0;
+    [NonSerialized]
+    float lastHeight;
+    [NonSerialized]
+    float lastLookHeight;
+    [NonSerialized]
+    float targetHeight;
+    [NonSerialized]
+    float targetLookHeight;
+    [NonSerialized]
+    float zoomTimer;
+    [NonSerialized]
+    float zoomDuration;
+    [NonSerialized]
     bool zooming;
-    public int lastZoomDirection = 1;
+    [NonSerialized]
+    int lastZoomDirection = 1;
 
     static ZoomState CloseZoom = new ZoomState(3, -3);
     static ZoomState MidZoom = new ZoomState(5, 0);
@@ -60,8 +71,8 @@ public class FollowBehaviour : CameraBehaviour
             targetYaw = defaultYaw;
         if (zoomLevel == 0)
             SetZoomLevel(1);
-        ResetTargetYaw();
-        ResetTargetZoom();
+        ResetRotationTimer();
+        ResetZoomTimer();
     }
 
     public override void Exit()
@@ -76,7 +87,6 @@ public class FollowBehaviour : CameraBehaviour
             UpdateZoom();
 
         Vector3 direction = Quaternion.Euler(0, yaw, 0) * Vector3.forward;
-
         Vector3 position = context.target.position + direction * distance;
         position += Vector3.up * height;
 
@@ -90,34 +100,26 @@ public class FollowBehaviour : CameraBehaviour
     {
         if (!zooming)
         {
-            float inbetweenYaw = Mathf.Round(yaw / 90) * 90;
+            float inbetweenYaw = Mathf.Round(yaw / rotateAmount) * rotateAmount;
             float? newTargetYaw = null;
 
             if (amount > 0)
             {
                 if (inbetweenYaw > targetYaw)
                     newTargetYaw = inbetweenYaw;
-                else if (targetYaw - inbetweenYaw < rotateThreshold)
-                    newTargetYaw = inbetweenYaw + 90;
+                else if (Mathf.Abs(yaw - targetYaw) < rotateThreshold)
+                    newTargetYaw = inbetweenYaw + rotateAmount;
             }
             else if (amount < 0)
             {
                 if (inbetweenYaw < targetYaw)
                     newTargetYaw = inbetweenYaw;
-                else if (inbetweenYaw - targetYaw < rotateThreshold)
-                    newTargetYaw = inbetweenYaw - 90;
+                else if (Mathf.Abs(yaw - targetYaw) < rotateThreshold)
+                    newTargetYaw = inbetweenYaw - rotateAmount;
             }
 
             if (newTargetYaw != null)
-            {
-                lastYaw = yaw;
-                rotateTimer = 0;
-                targetYaw = (float) newTargetYaw;
-                rotateDuration = Mathf.Clamp01(Mathf.Abs(targetYaw - yaw) / 90) * maxRotateDuration;
-                if (rotateDuration < minRotateDuration)
-                    rotateDuration = minRotateDuration;
-                rotating = true;
-            }
+                SetRotation((float)newTargetYaw);
         }
     }
 
@@ -132,9 +134,26 @@ public class FollowBehaviour : CameraBehaviour
         }
     }
 
+    void SetRotation(float angle)
+    {
+        lastYaw = yaw;
+        rotateTimer = 0;
+        targetYaw = angle ;
+        rotateDuration = Mathf.Clamp01(Mathf.Abs(targetYaw - yaw) / rotateAmount) * maxRotateDuration;
+        if (rotateDuration < minRotateDuration)
+            rotateDuration = minRotateDuration;
+        rotating = true;
+    }
+
     void SetZoomLevel(int level)
     {
         int zoomDirection = level - zoomLevel;
+
+        // Don't allow additional changes to the zoom level until the previous transition has
+        // passed the specified threshold.
+        if (zooming && (zoomDirection == lastZoomDirection))
+            if (zoomTimer / zoomDuration < zoomThreshold)
+                return;
 
         lastHeight = height;
         lastLookHeight = lookHeight;
@@ -144,6 +163,7 @@ public class FollowBehaviour : CameraBehaviour
         targetLookHeight = zoomState.offset;
 
         zoomDuration = maxZoomDuration;
+        // Set the zoom transition duration appropriately if walking back from the previous target
         if (zooming && (zoomDirection != lastZoomDirection))
             if ((zoomDuration != 0) && (zoomTimer != 0))
                 zoomDuration = Mathf.Max((zoomTimer / zoomDuration) * maxZoomDuration, minZoomDuration);
@@ -158,45 +178,49 @@ public class FollowBehaviour : CameraBehaviour
     {
         if (rotateTimer < rotateDuration)
         {
-            rotateTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(rotateTimer / rotateDuration);
-            t = t * t * (3 - 2 * t);
+            float t = UpdateAndGetTimer(ref rotateTimer, rotateDuration);
             yaw = Mathf.LerpAngle(lastYaw, targetYaw, t);
         }
         else
-            ResetTargetYaw();
+            ResetRotationTimer();
     }
 
     void UpdateZoom()
     {
         if (zoomTimer < zoomDuration)
         {
-            zoomTimer += Time.deltaTime;
-            float t = Mathf.Clamp01(zoomTimer / zoomDuration);
-            t = t * t * (3 - 2 * t);
+            float t = UpdateAndGetTimer(ref zoomTimer, zoomDuration);
             height = Mathf.Lerp(lastHeight, targetHeight, t);
             lookHeight = Mathf.Lerp(lastLookHeight, targetLookHeight, t);
         }
         else
-            ResetTargetZoom();
+            ResetZoomTimer();
     }
 
-    void ResetTargetYaw()
+    void ResetRotationTimer()
     {
         targetYaw %= 360;
         yaw = targetYaw;
-        rotating = false;
         rotateTimer = 0;
         rotateDuration = 0;
+        rotating = false;
     }
 
-    void ResetTargetZoom()
+    void ResetZoomTimer()
     {
         height = targetHeight;
         lookHeight = targetLookHeight;
-        zooming = false;
         zoomTimer = 0;
         zoomDuration = 0;
+        zooming = false;
+    }
+
+    float UpdateAndGetTimer(ref float timer, float duration)
+    {
+        timer += Time.deltaTime;
+        float t = Mathf.Clamp01(timer / duration);
+        t = t * t * (3 - 2 * t);
+        return t;
     }
 }
 
