@@ -38,7 +38,7 @@ public class FollowBehaviour : CameraBehaviour
     bool rotating;
 
     [NonSerialized]
-    int zoomLevel;
+    int zoomLevel = -1;
     [NonSerialized]
     float height = 5;
     [NonSerialized]
@@ -69,14 +69,17 @@ public class FollowBehaviour : CameraBehaviour
     {
         if (yaw == -1)
             targetYaw = defaultYaw;
-        if (zoomLevel == 0)
+        if (zoomLevel == -1)
             SetZoomLevel(1);
+
         ResetRotationTimer();
         ResetZoomTimer();
     }
 
     public override void Exit()
     {
+        ResetRotationTimer();
+        ResetZoomTimer();
     }
 
     public override CameraState GetCameraState(CameraContext context)
@@ -87,11 +90,11 @@ public class FollowBehaviour : CameraBehaviour
             UpdateZoom();
 
         Vector3 direction = Quaternion.Euler(0, yaw, 0) * Vector3.forward;
-        Vector3 position = context.target.position + direction * distance;
+        Vector3 position = target.transform.position + direction * distance;
         position += Vector3.up * height;
 
         Vector3 lookPos = Vector3.up * lookHeight;
-        Quaternion rotation = Quaternion.LookRotation(context.target.position - (position + lookPos));
+        Quaternion rotation = Quaternion.LookRotation(target.transform.position - (position + lookPos));
 
         return new CameraState(position, rotation);
     }

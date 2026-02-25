@@ -12,9 +12,13 @@ public class CameraController : MonoBehaviour
     CameraBehaviour behaviour;
     CameraState state;
 
+    CameraBehaviour prevBehaviour;
+    public GameObject secondObj;
+
     void Awake()
     {
         context = new CameraContext(transform, player.transform);
+        defaultBehaviour.target = player;
         SetBehaviour(defaultBehaviour);
     }
 
@@ -28,15 +32,20 @@ public class CameraController : MonoBehaviour
 
     void LateUpdate()
     {
-        state = behaviour.GetCameraState(context);
 
         if (transition.IsTransitioning())
-            transition.UpdateTransition(transform);
+        {
+            state = transition.GetCurrentState();
+            transition.SetTargetState(behaviour.GetCameraState(context));
+            transition.UpdateTransition();
+        }
         else
         {
-            transform.position = state.position;
-            transform.rotation = state.rotation;
+            state = behaviour.GetCameraState(context);
         }
+
+        transform.position = state.position;
+        transform.rotation = state.rotation;
     }
 
     private void OnRotate(InputValue value)
@@ -49,5 +58,23 @@ public class CameraController : MonoBehaviour
     {
         if (!transition.IsTransitioning())
             behaviour.Zoom(value.Get<float>());
+    }
+
+    private void OnSwapCamera(InputValue value)
+    {
+        CameraState prevState = state;
+
+        if (prevBehaviour == null)
+        {
+            prevBehaviour = ScriptableObject.CreateInstance<FollowBehaviour>();
+            prevBehaviour.target = secondObj;
+
+        }
+        CameraBehaviour inbetweenBehaviour;
+        inbetweenBehaviour = behaviour;
+        SetBehaviour(prevBehaviour);
+        prevBehaviour = inbetweenBehaviour;
+
+        transition.Begin(prevState, state, transitionSpeed);
     }
 }

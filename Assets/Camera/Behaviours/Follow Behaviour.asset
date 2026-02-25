@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b7cbc3a4387a5d4582511b9a47a5a7a, type: 3}
   m_Name: Follow Behaviour
   m_EditorClassIdentifier: Assembly-CSharp::FollowBehaviour
+  target: {fileID: 0}
   distance: 10.13
   defaultYaw: 90
   rotateAmount: 90

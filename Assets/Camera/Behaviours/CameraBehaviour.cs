@@ -2,6 +2,8 @@ using UnityEngine;
 
 public abstract class CameraBehaviour : ScriptableObject
 {
+    public GameObject target;
+
     public abstract void Enter();
     public abstract void Exit();
     public abstract CameraState GetCameraState(CameraContext context);
