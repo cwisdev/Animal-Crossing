@@ -17,10 +17,11 @@ public class TileCornerController : MonoBehaviour
         bool downLeft = tilemap.HasTile(position + Vector3Int.down + Vector3Int.left);
         bool downRight = tilemap.HasTile(position + Vector3Int.down + Vector3Int.right);
 
-        topLeft.transform.rotation = Quaternion.Euler(0, 90, 0);
-        topRight.transform.rotation = Quaternion.Euler(0, 180, 0);
+        // Cancel all rotation on the inner corners
+        topLeft.transform.rotation = Quaternion.Euler(0, 0, 0);
+        topRight.transform.rotation = Quaternion.Euler(0, 0, 0);
         bottomLeft.transform.rotation = Quaternion.Euler(0, 0, 0);
-        bottomRight.transform.rotation = Quaternion.Euler(0, 270, 0);
+        bottomRight.transform.rotation = Quaternion.Euler(0, 0, 0);
 
         topLeft.SetActive(up && left && !upLeft);
         topRight.SetActive(up && right && !upRight);
