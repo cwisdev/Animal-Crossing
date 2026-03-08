@@ -37,7 +37,10 @@ public class GameObjectRuleTile : RuleTile<GameObjectRuleTile.Neighbor>
                 {
                     GameObject tileInstance = map.GetInstantiatedObject(pos);
                     if (tileInstance != null)
+                    {
                         tileInstance.GetComponent<TileCornerController>()?.UpdateCorners(map, pos);
+                        tileInstance.GetComponent<TileCornerController2>()?.UpdateCorners(map, pos);
+                    }
                 }
             }
 
