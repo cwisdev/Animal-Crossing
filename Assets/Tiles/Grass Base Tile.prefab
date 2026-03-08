@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &8115220232648744766
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      propertyPath: m_Name
+      value: Grass Base Tile
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6153688618219172526}
+  m_SourcePrefab: {fileID: 100100000, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+--- !u!1 &5780701337937120 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -1113651028393477154, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+  m_PrefabInstance: {fileID: 8115220232648744766}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1386020805829481483 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2043737740157973707, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+  m_PrefabInstance: {fileID: 8115220232648744766}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6578050675682837293 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3158962821053504531, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+  m_PrefabInstance: {fileID: 8115220232648744766}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7352716449072117484 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1627230382557112786, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+  m_PrefabInstance: {fileID: 8115220232648744766}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8961710396261687919 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: eb377d61de0aeaf47939d07ab2685c9f, type: 3}
+  m_PrefabInstance: {fileID: 8115220232648744766}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6153688618219172526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8961710396261687919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56697277ecd70a4499e4aee32b11fdb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TileCornerController
+  topLeft: {fileID: 6578050675682837293}
+  topRight: {fileID: 1386020805829481483}
+  bottomLeft: {fileID: 7352716449072117484}
+  bottomRight: {fileID: 5780701337937120}
+  reversed: 1

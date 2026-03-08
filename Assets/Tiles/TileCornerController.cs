@@ -4,6 +4,7 @@ using UnityEngine.Tilemaps;
 public class TileCornerController : MonoBehaviour
 {
     public GameObject topLeft, topRight, bottomLeft, bottomRight;
+    public bool reversed;
 
     public void UpdateCorners(Tilemap tilemap, Vector3Int position)
     {
@@ -23,9 +24,19 @@ public class TileCornerController : MonoBehaviour
         bottomLeft.transform.rotation = Quaternion.Euler(0, 0, 0);
         bottomRight.transform.rotation = Quaternion.Euler(0, 0, 0);
 
-        topLeft.SetActive(up && left && !upLeft);
-        topRight.SetActive(up && right && !upRight);
-        bottomLeft.SetActive(down && left && !downLeft);
-        bottomRight.SetActive(down && right && !downRight);
+        if (reversed)
+        {
+            topLeft.SetActive(up && left && upLeft);
+            topRight.SetActive(up && right && upRight);
+            bottomLeft.SetActive(down && left && downLeft);
+            bottomRight.SetActive(down && right && downRight);
+        }
+        else
+        {
+            topLeft.SetActive(up && left && !upLeft);
+            topRight.SetActive(up && right && !upRight);
+            bottomLeft.SetActive(down && left && !downLeft);
+            bottomRight.SetActive(down && right && !downRight);
+        }
     }
 }
